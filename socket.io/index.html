@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>POC | Socket.io</title>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>POC | Socket.io</h1>
+    <div id="info"></div>
+    <ul id="messages"></ul>
+    <form id="form">
+      <input type="text" id="txtMensaje" autocomplete="off" />
+      <button id="btnEnviar" type="button" onClick="enviar()">Send</button>
+    </form>
+    <script>
+      var socket
+      var form
+      var txtMensaje
+      var btnEnviar
+      var messages
+      var usuario
+      var mostrarUsuario
+      var usuarios = [
+        "Julián",
+        "Dario",
+        "Juan",
+        "Pedro",
+        "Lucas",
+        "Mariano",
+        "Federico",
+        "Gonzalo",
+        "Matias",
+        "Ezequiel",
+      ]
+      document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+          usuario = Math.floor(Math.random() * (10 - 1 + 1) + 1)
+          mostrarUsuario = document.getElementById("info")
+          mostrarUsuario.innerHTML = "Usuario: " + usuarios[usuario]
+          socket = io({ auth: { usuario: usuario } })
+          form = document.getElementById("form")
+          txtMensaje = document.getElementById("txtMensaje")
+          btnEnviar = document.getElementById("btnEnviar")
+          messages = document.getElementById("messages")
+          socket.on("chat message", function (msg) {
+            var li = document.createElement("li")
+            li.innerHTML = msg
+            messages.appendChild(li)
+          })
+        },
+        false
+      )
+      function enviar() {
+        if (txtMensaje.value) {
+          socket.emit("chat message", txtMensaje.value)
+          txtMensaje.value = ""
+        }
+      }
+    </script>
+  </body>
+</html>
